@@ -31,6 +31,15 @@
   radius: 3pt,
   titlix: title => text(weight: "bold")[ (#title)],
 )
+#let lemma = mathblock(
+  blocktitle: "Лемма",
+  inset: 8pt,
+  fill: rgb("#f5fff0"),
+  stroke: rgb("#2ecc40") + 0.5pt,
+  radius: 3pt,
+  titlix: title => text(weight: "bold")[ (#title)],
+)
+
 
 #let definition = mathblock(
   blocktitle: "Определение",
@@ -262,8 +271,187 @@
   - _Достаточность_: достаточно положить, что $m = -c, M = c$
 ]
 
-== Точные грани
-//TODO
+== Точные грани (#link("https://edu.hse.ru/mod/lesson/view.php?id=1749242&pageid=8507&startlastseen=no", "Лекция"))
+
+=== Инфимум (наибольшая из минорант)
+#definition[
+  - $forall x in X space m <= x$
+  - $forall epsilon > 0 space exists x` in X space m + epsilon > x`$
+]
+
+=== Супремум (наименьшая из мажорант)
+#definition[
+  - $forall x in X space x <= M$
+  - $forall epsilon > 0 space x` in X space x` > M - epsilon$
+]
+
+=== Теорема о единственности точных граней
+
+#theorem(title: "Теорема о единственности точных граней")[
+  Числовое множетсво не может иметь более одной точной верхней (нижней) грани.
+] <thm:edin>
+
+#proof(of: <thm:edin>)[
+  \
+  *Для супремума:*
+  - Рассмотрим $X subset.eq RR, x != emptyset$
+  - Допустим $exists b < b`: sup X = b, sup X = b`$. Тогда $forall x in X space x <= b, x <= b`$, но $forall epsilon > 0 space exists x, x` in X: x > b - epsilon, x` > b` - epsilon$
+  - Рассмотрим $epsilon = b` - b$. Раз $exists x in X: x > b - epsilon = b`$, противоречие
+
+  \
+  *Для инфимума:*
+  - TODO
+
+]
+
+=== Теорема о существовании точных граней
+#theorem(title: "Теорема о существовании точных граней")[
+  Всякое непустое ограниченно сверху (снизу) числовое множество имеет точнуюю верхнюю (нижнюю) грань.
+] <thm:existstg>
+
+#proof(of: <thm:existstg>)[
+  \
+  *Для супремума:*
+  - Рассмотрим $X subset.eq RR, X != emptyset$
+  - Рассмотрим множество его верхних граней $V: forall v in V, forall x in X space x <= v$
+  - В силу аксиомы непрерывности, $exists c in RR: forall x in X, forall v in V space x <= c <= v$. Осталось доказать, что $sup X = c$
+  - По определению супремума требуется 2 условия, первое уже выполнено ($forall x in X space x <= c$). Теперь убедимся, что $forall epsilon > 0 space exists x` in X: x` > c - epsilon = c`$. Утвердим, что $c`$ - не верхняя грань, т.е. $c` in.not V$, т.к $c` = c - epsilon < c$, но ранее утвердили, что $forall v in V c <= v$
+
+  \
+  *Для инфимума:*
+  - TODO
+]
+
+== Теорема Кантора (#link("https://edu.hse.ru/mod/lesson/view.php?id=1749242&pageid=8508", "Лекция"))
+
+=== Система вложенных отрезков
+#definition()[
+  Набор отрезков, каждый из которых содержится внутри предыдущего.
+  $
+    {[a_n;b_n]}_(n=1)^+oo = {[a_1; b_1], [a_2, b_2], ...: forall n in NN [a_(n+1); b_(n+1)] subset.eq [a_n; b_n]}
+  $
+]
+
+==== Теорема Кантора о системе вложенных отрезков
+#theorem(title: "Теорема Кантора о системе вложенных отрезков")[
+  В любой системе вложенных отрезков найдется точка, принадлежащая всем отрезкам системы.
+] <thm:kantor>
+
+#proof(of: <thm:kantor>)[
+  - Рассмотрим множества левых и правых концов системы: Пусть $A = {a_1, a_2, ...}, B = {b_1, b_2, ...}$
+  - $A, B != emptyset$ и $forall n, m in NN space a_n <= a_(n+m) < b_(n+m) <= b_m$. Тогда, в силу аксиомы непрерывности, $exists epsilon in RR: a_n <= epsilon <= b_m$
+  - В силу произвольного выбора n и m, положим n = m, тогда $epsilon in [a_n; b_n] space forall n in NN$
+]
+
+=== Стягивающаяся система вложенных отрезков
+#definition[
+  Если $forall epsilon > 0 space exists N in NN: b_N - a_N < epsilon$
+]
+
+==== Теорема Кантора о системе стягивающихся отрезков
+#theorem(title: "Теорема Кантора о системе стягивающихся отрезков")[
+  Стягивающаяся система вложенных отрезков имеет ровно одну точку $epsilon$, принадлежащую всем отрезкам, причем $xi = display(sup_(forall n in NN){a_n} = inf_(forall n in NN){b_n})$
+] <thm:kantor2>
+
+#proof(of: <thm:kantor2>)[
+  \ *Доказательство единственности:*
+  - Существование точки доказано ранее, покажем единственность
+  - Допустим обратное: пусть $exists xi_1 != xi_2: xi_1, xi_2 in [a_n; b_n] forall n in NN$. Тогда $0 < |xi_1 - xi_2| <= b_n - a_n$
+  - Из определения $forall epsilon > 0 space exists N in NN: forall n >= N space b_n - a_n < epsilon$, то $|xi_1 - xi_2| <= b_n - a_n < epsilon$
+  - В силу произвольного выбора $epsilon$, рассмотрим $epsilon = (|xi_1 - xi_2|)/2$, тогда $|xi_1 - xi_2| < (|xi_1 - xi_2|) / 2$
+
+  \ *Доказательство $xi = display(sup_(forall n in NN){a_n} = inf_(forall n in NN){b_n})$:*
+  - Из определения вложенных отрезков $forall n in NN space a_n <= b_n$
+  - По теореме Кантора всегда найдется точка $xi: forall n in NN a_n <= xi <= b_n$
+  - Значит, $xi$ мажорирует множество ${a_n}$ и минорирует множество ${b_n}: forall n in NN space a_n <= display(sup_(forall n in NN){a_n}) <= xi <= display(inf_(forall n in NN){b_n} <= b_n)$
+  - Допустим, $exists eta = display(sup_(forall n in NN){a_n} != mu = inf_(forall n in NN){b_n})$
+  - Тогда $forall n in NN space a_n <= eta <= b_n$ и $a_n <= mu <= b_n$ - нашлось две точки, принадлежащих всем отрезкам системы
+]
+
+== Числовая последовательность (#link("https://edu.hse.ru/mod/lesson/view.php?id=1749242&pageid=8509", "Лекция"))
+
+#definition[
+  Функция $a_n = a(n): NN -> RR$, обозначают ${a_n}_(n=1)^+oo$ или просто ${a_n}$.
+]
+
+== Монотонность (#link("https://edu.hse.ru/mod/lesson/view.php?id=1749242&pageid=8510", "Лекция"))
+
+== Сходимость (#link("https://edu.hse.ru/mod/lesson/view.php?id=1757818&pageid=8513&startlastseen=no", "Лекция"))
+
+#definition[
+  Число $A in RR$ назовем *конечным пределом* последовательности ${a_n}$, если $forall epsilon > 0 space exists N = N_epsilon in NN: forall n >= N space |a_n - A| < epsilon$. Обозначают $display(lim_(n->+oo)(a_n) = A)$ или $display(a_n ->_(n->+oo) A)$
+
+  \
+  Говорят, что такая последовательность сходится к A или просто называют ее *сходящейся*. A - обязательно число.
+
+  \
+  На языке окрестностей: $exists A in RR: forall epsilon > 0 space exists N = N_epsilon in NN: forall n >= N space a_n in O_epsilon (A)$
+]
+
+== Необходимое условие сходимости (#link("https://edu.hse.ru/mod/lesson/view.php?id=1757818&pageid=8514", "Лекция"))
+
+#theorem(title: "Необходимое условие сходимости")[
+  Сходящаяся последовательность ограничена: ${exists A in RR: display(lim_(n->+oo)(a_n) = A)} => {exists C in RR^+: forall n in NN space |a_n| <= C}$
+
+  \
+  Обратное неверно
+] <thm:schod>
+
+#proof(of: <thm:schod>)[
+  - Из определения $forall epsilon > 0 space exists N in NN: forall n >= N space |a_n - A| < epsilon$
+  - Значит для $epsilon = 1 space exists N_1 in NN: forall n >= N_1 space |a_n - A| < 1$
+  - Рассмотрим $|a_n| = |a_n - A + A| <= |a_n - A| + |A| < 1 + |A| -> N_1 |a_n| < 1 + |A|$
+  - Пусть $C = max{|a_1|, |a_2|, ..., |a_(N_1 - 1)|, 1 + |A|}$, тогда $forall n in NN space |a_n| <= C$
+]
+
+#lemma(title: "О необходимом условии сходимости")[
+  $
+    {exists A in RR: display(lim_(n->+oo)(a_n)) = A} => {display(lim_(n->+oo)(a_n - a_(n+1))) = 0}
+  $
+] <lem:schod>
+
+#proof(of: <lem:schod>)[
+  - Из определения $forall epsilon > 0 space exists N in NN: forall n >= N space |a_n - A| < epsilon$
+  - Рассмотрим $|a_n - a_(n+1)| = |a_n - A + A - a_(n+1)| display(<=^("н-во" triangle)) |a_n - A| + |a_(n+1) - A| < 2 epsilon$
+  - Тогда $forall epsilon` > 0 space exists N` = N(epsilon`/2) in NN: forall n >= N` |a_n - a_(n+1) - 0| < epsilon`$
+]
+
+== Единственность предела (#link("https://edu.hse.ru/mod/lesson/view.php?id=1757818&pageid=8515", "Лекция"))
+
+#theorem(title: "Теорема о единственности предела")[
+  Последовательность не может иметь более одного предела.
+] <thm:edpred>
+
+#proof(of: <thm:edpred>)[
+  - Пусть $exists A_1 < A_2 in RR: A_1 = display(lim_(n->+oo)a_n), A_2 = display(lim_(n->+oo)a_n)$
+  - Выберем $epsilon$ так, чтобы окрестности не пересекались, например, $epsilon = (A_2 - A_1)/3$, то $O_epsilon A_1 inter O_epsilon A_2 = emptyset$
+  - Из определения $exists N_1 in NN: forall n >= N_1 space |a_n - A_1| < epsilon$ и $exists N_2 in NN: forall n >= N_2 space |a_n - A_2| < epsilon$
+  - Рассмотрим $N_m = max{N_1, N_2}$, тогда одновременно $forall n >= N_m$ одновременно $a_n in O_epsilon A_1$ и $a_n in O_epsilon A_2$, но по построению они не пересекаются.
+]
+
+== Теоремы об арифметике в пределах (#link("https://edu.hse.ru/mod/lesson/view.php?id=1757818&pageid=8516", "Лекция"))
+
+#theorem(title: "Теорема о линейных комбинациях в пределах")[
+  \ Пусть ${a_n}, {b_n}: display(lim_(n->+oo) a_n = A),display(lim_(n->+oo) b_n = B); A, B in RR$, тогда
+  1. $exists display(lim_(n->+oo) (c dot a_n)), forall c in RR$ и он равен $c dot A$
+  2. $exists display(lim_(n->+oo) (a_n + b_n))$ и он равен $A + B$
+  3. $exists display(lim_(n->+oo) (a_n dot b_n))$ и он равен $A dot B$
+  4. если $forall n in NN space b_n != 0$ и $B != 0$, то $exists display(lim_(n->+oo) (a_n/b_n))$ и он равен $A/B$
+] <thm:linpred>
+
+#proof(of: <thm:linpred>)[
+  \
+  1. $exists display(lim_(n->+oo) (c dot a_n)) = c dot A, forall c in RR$
+    - Требуется $forall epsilon > 0$ назвать $N in NN: forall n >= N space |(c dot a_n) - c dot A| < epsilon$
+    - $forall c != 0 display(lim_(n->+oo) a_n) = A => forall epsilon_1 = epsilon/abs(c) > 0 space exists N_1 in NN: forall n >= N_1 space |a_n - A| < epsilon_1$
+    - $forall epsilon > 0 space exists N = N_1 in NN: forall n >= N space abs((c dot a_n) - c dot A) = abs(c dot (a_n - A)) = abs(c) dot abs(a_n - A) < abs(c) dot epsilon_1$, чтд
+]
+
+
+
+
+
+
 
 #pagebreak()
 
